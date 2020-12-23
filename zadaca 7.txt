@@ -1,0 +1,11 @@
+CREATE VIEW `allPackages` AS SELECT 
+client.id_client AS clientID,
+client.firstName AS FirstName,
+client.lastName AS LastName,
+SUM(packet_price.price) AS SumPrice,
+SUM(packet.id_packet) AS SumPackage
+FROM client
+JOIN packet ON client.id_client = packet.Fk_client
+JOIN packet_price ON packet.Fk_price_packet = packet_price.id_packet_Price 
+GROUP BY 
+client.id_client ;

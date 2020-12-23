@@ -1,0 +1,13 @@
+zadaca 6 
+
+CREATE PROCEDURE Statuses(IN packet_Id INTEGER)
+BEGIN
+SELECT
+  packet, status
+FROM packet
+  INNER JOIN delivery
+    ON packet.idpacket = delivery.fk_packet
+  INNER JOIN status_delivery
+    ON delivery.fk_status = status_delivery.id_status
+WHERE packet.idpacket = packet_Id; 
+END

@@ -1,0 +1,8 @@
+zadaca 4
+
+CREATE TABLE IF NOT EXISTS stat
+(
+id_stat INT (11) NOT NULL AUTO_INCREMENT,
+desc_stat TEXT (500),
+date_stat DATETIME,
+PRIMARY KEY (id_stat)

@@ -1,0 +1,122 @@
+zadaca 1 .
+
+CREATE TABLE IF NOT EXISTS client (
+  id_Client INT(11) NOT NULL AUTO_INCREMENT,
+  firstName VARCHAR(255) NOT NULL,
+  lastName VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  PRIMARY KEY (id_Client)
+) 
+
+CREATE TABLE IF NOT EXISTS packet_price (
+  id_packet_Price INT(11) NOT NULL AUTO_INCREMENT,
+  weight VARCHAR(255) NOT NULL,
+  price DECIMAL(10, 0) NOT NULL,
+  PRIMARY KEY (id_packet_Price)
+)
+
+CREATE TABLE IF NOT EXISTS recipient (
+  id_recipient INT(11) NOT NULL AUTO_INCREMENT,
+  fulName VARCHAR(255) DEFAULT NULL,
+  address VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id_recipient)
+)
+
+
+CREATE TABLE IF NOT EXISTS status_delivery (
+  id_status INT(11) NOT NULL AUTO_INCREMENT,
+  status VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id_status)
+)
+
+
+CREATE TABLE IF NOT EXISTS packet (
+  id_packet INT(11) NOT NULL AUTO_INCREMENT,
+  fk_price_packet INT(11) NOT NULL,
+  fk_client INT(11) NOT NULL,
+  fk_recipient INT(11) NOT NULL,
+  datePacket DATETIME DEFAULT NULL,
+  PRIMARY KEY (id_packet),
+  INDEX `FK_paket_cena_paket_[id_cena_paket` (fk_price_packet),
+  INDEX FK_paket_klient_id_klient (fk_client),
+  INDEX FK_paket_primac_id_primac (fk_recipient)
+)
+
+
+CREATE TABLE IF NOT EXISTS delivery (
+  Id_delivery INT(11) NOT NULL AUTO_INCREMENT,
+  fk_packet INT(11) NOT NULL,
+  fk_status INT(11) NOT NULL,
+  date_delivered DATETIME NOT NULL,
+  PRIMARY KEY (Id_delivery),
+  FOREIGN KEY (fk_packet) REFERENCES packet(id_packet),
+  FOREIGN KEY (fk_status) REFERENCES  status_delivery(id_status) 
+)
+
+
+--------------------------------------------------------------------------
+
+zadaca 4
+
+CREATE TABLE IF NOT EXISTS stat
+(
+id_stat INT (11) NOT NULL AUTO_INCREMENT,
+desc_stat TEXT (500),
+date_stat DATETIME,
+PRIMARY KEY (id_stat)
+
+
+
+
+
+
+------------------------------------------------------------------------------
+zadaca 5
+
+CREATE TRIGGER NewPacket
+    AFTER INSERT
+    ON `packet`
+    FOR EACH ROW
+BEGIN
+declare PriceNew int(11);
+SELECT
+  fk_price_packet INTO PriceNew
+FROM packet
+INNER JOIN packet_price
+ON packet.fk_price_packet = packet_price.id_packet_price
+WHERE  packet.id_packet = new.id_packet;
+INSERT INTO stat
+SET desc_stat = CONCAT('Inserted Packet with ', new.id_packet, ', and price in ', PriceNew),
+    date_stat = NOW(); END
+
+-------------------------------------------------------------------------------------
+zadaca 6 
+
+CREATE PROCEDURE Statuses(IN packet_Id INTEGER)
+BEGIN
+SELECT
+  packet, status
+FROM packet
+  INNER JOIN delivery
+    ON packet.idpacket = delivery.fk_packet
+  INNER JOIN status_delivery
+    ON delivery.fk_status = status_delivery.id_status
+WHERE packet.idpacket = packet_Id; 
+END
+
+----------------------------------------------------------------------------------------------
+zadaca 7 
+
+CREATE VIEW `allPackages` AS SELECT 
+client.id_client AS clientID,
+client.firstName AS FirstName,
+client.lastName AS LastName,
+SUM(packet_price.price) AS SumPrice,
+SUM(packet.id_packet) AS SumPackage
+FROM client
+JOIN packet ON client.id_client = packet.Fk_client
+JOIN packet_price ON packet.Fk_price_packet = packet_price.id_packet_Price 
+GROUP BY 
+client.id_client ;

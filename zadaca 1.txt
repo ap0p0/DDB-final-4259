@@ -1,0 +1,57 @@
+zadaca 1 .
+
+CREATE TABLE IF NOT EXISTS client (
+  id_Client INT(11) NOT NULL AUTO_INCREMENT,
+  firstName VARCHAR(255) NOT NULL,
+  lastName VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  email VARCHAR(50) NOT NULL,
+  PRIMARY KEY (id_Client)
+) 
+
+CREATE TABLE IF NOT EXISTS packet_price (
+  id_packet_Price INT(11) NOT NULL AUTO_INCREMENT,
+  weight VARCHAR(255) NOT NULL,
+  price DECIMAL(10, 0) NOT NULL,
+  PRIMARY KEY (id_packet_Price)
+)
+
+CREATE TABLE IF NOT EXISTS recipient (
+  id_recipient INT(11) NOT NULL AUTO_INCREMENT,
+  fulName VARCHAR(255) DEFAULT NULL,
+  address VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id_recipient)
+)
+
+
+CREATE TABLE IF NOT EXISTS status_delivery (
+  id_status INT(11) NOT NULL AUTO_INCREMENT,
+  status VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id_status)
+)
+
+
+CREATE TABLE IF NOT EXISTS packet (
+  id_packet INT(11) NOT NULL AUTO_INCREMENT,
+  fk_price_packet INT(11) NOT NULL,
+  fk_client INT(11) NOT NULL,
+  fk_recipient INT(11) NOT NULL,
+  datePacket DATETIME DEFAULT NULL,
+  PRIMARY KEY (id_packet),
+  INDEX `FK_paket_cena_paket_[id_cena_paket` (fk_price_packet),
+  INDEX FK_paket_klient_id_klient (fk_client),
+  INDEX FK_paket_primac_id_primac (fk_recipient)
+)
+
+
+CREATE TABLE IF NOT EXISTS delivery (
+  Id_delivery INT(11) NOT NULL AUTO_INCREMENT,
+  fk_packet INT(11) NOT NULL,
+  fk_status INT(11) NOT NULL,
+  date_delivered DATETIME NOT NULL,
+  PRIMARY KEY (Id_delivery),
+  FOREIGN KEY (fk_packet) REFERENCES packet(id_packet),
+  FOREIGN KEY (fk_status) REFERENCES  status_delivery(id_status) 
+)
+

@@ -1,0 +1,17 @@
+zadaca 5
+
+CREATE TRIGGER NewPacket
+    AFTER INSERT
+    ON `packet`
+    FOR EACH ROW
+BEGIN
+declare PriceNew int(11);
+SELECT
+  fk_price_packet INTO PriceNew
+FROM packet
+INNER JOIN packet_price
+ON packet.fk_price_packet = packet_price.id_packet_price
+WHERE  packet.id_packet = new.id_packet;
+INSERT INTO stat
+SET desc_stat = CONCAT('Inserted Packet with ', new.id_packet, ', and price in ', PriceNew),
+    date_stat = NOW(); END
